@@ -61,3 +61,15 @@ input_func = tf.estimator.inputs.pandas_input_fn(x=x_train,y=y_train,batch_size=
 model = tf.estimator.LinearClassifier(feature_columns=feat_cols)
 
 model.train(input_func,steps = 10000)
+
+
+pred_fn = tf.estimator.inputs.pandas_input_fn(x=x_test,batch_size=len(x_test),shuffle = False)
+
+predictions = list(model.predict(pred_fn))
+
+predictions
+
+final_pred = []
+
+for preds in predictions:
+    final_pred.append(preds['class_ids'][0])
