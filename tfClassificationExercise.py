@@ -73,3 +73,9 @@ final_pred = []
 
 for preds in predictions:
     final_pred.append(preds['class_ids'][0])
+    
+    
+from sklearn.metrics import classification_report
+
+print(classification_report(y_test, final_pred))
+    
