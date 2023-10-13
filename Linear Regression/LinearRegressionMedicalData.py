@@ -8,8 +8,18 @@ from sklearn.model_selection import train_test_split
 # Read data
 insurance = pd.read_csv("https://raw.githubusercontent.com/stedy/Machine-Learning-with-R-datasets/master/insurance.csv")
 
+
+# Scale Data
+from sklearn.compose import make_column_transformer
+from sklearn.preprocessing import MinMaxScaler,OneHotEncoder
+
+ct = make_column_transformer(
+    (MinMaxScaler(),['age','bmi','children']),
+    (OneHotEncoder(handle_unknown="ignore"),["sex","smoker","region"])
+)
+
 #Encoding Categorical Vars
-insurance = pd.get_dummies(insurance).astype(int)
+#insurance = pd.get_dummies(insurance).astype(int)
 
 
 #Split data
@@ -21,13 +31,16 @@ y = insurance['charges']
 
 train_x,test_x,train_y, test_y = train_test_split(X,y, test_size=0.2,random_state=42)
 
+train_x = ct.fit_transform(train_x)
+test_x = ct.fit_transform(test_x)
+
 
 
 
 #creating model
 
 model =  tf.keras.Sequential([
-    tf.keras.layers.Dense(100),
+    tf.keras.layers.Dense(50),
     tf.keras.layers.Dense(50),
     tf.keras.layers.Dense(1)
 ])
@@ -35,8 +48,9 @@ model =  tf.keras.Sequential([
 model.compile(loss=tf.keras.losses.mae,
               optimizer=tf.keras.optimizers.Adamax(learning_rate=0.01),
               metrics=['mae'])
+callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=3)
 
-model.fit(train_x,train_y,epochs=50)
+model.fit(train_x,train_y,epochs=100,callbacks=callback)
 
 pred_y=model.predict(tf.constant(test_x),)
 
