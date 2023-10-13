@@ -9,6 +9,7 @@ import numpy as np
 import tensorflow as tf
 
 
+
 # Creating data to view and fit
 X = np.array([-7.0, -4.0, -1.0, 2.0, 5.0, 8.0, 11.0, 14.0])
 
@@ -28,19 +29,21 @@ y= tf.constant(y)
 tf.random.set_seed(42)
 
 model = tf.keras.Sequential([
-    tf.keras.layers.Dense(100,activation="relu"),
-    tf.keras.layers.Dense(100,activation="relu"),
-    tf.keras.layers.Dense(100,activation="relu"),
+    tf.keras.layers.Dense(50,activation=None,trainable=False),
     tf.keras.layers.Dense(1)
 ])
 
 model.compile(loss=tf.keras.losses.mae,
-              optimizer=tf.keras.optimizers.SGD(),
+              optimizer=tf.keras.optimizers.Adam(learning_rate=0.01),
               metrics=['mae'])
 
-model.fit(tf.expand_dims(X,axis=-1),y,epochs=15)
+model.fit(tf.expand_dims(X,axis=-1),y,epochs=100)
 
-print(model.predict([17.0]))
+print(model.summary())
+# tf.keras.utils.plot_model(model)
+
+tf.keras.losses.MAPE()
+
 
 
 
