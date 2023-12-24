@@ -55,6 +55,7 @@ def plot_loss_curves(history):
     plt.title("loss")
     plt.xlabel("epochs")
     plt.legend()
+    plt.show()
 
     #plot  accuracy
     plt.figure()
@@ -63,7 +64,7 @@ def plot_loss_curves(history):
     plt.title("accuracy")
     plt.xlabel("epochs")
     plt.legend()
-
+    plt.show()
 def create_model(model_url,num_classes=10):
     feature_extractor_layer = hub.KerasLayer(model_url,trainable=False,name="feature_extractin_layer",input_shape=IMAGE_SHAPE+(3,)) #converts (224,224) to (224,224,3)#trainable false freezes model
     model = keras.Sequential([
@@ -73,7 +74,7 @@ def create_model(model_url,num_classes=10):
 
 
 #create Resnet Model
-resnet_model = create_model(resnet_url,num_classes=train_data_10_percent.num_classes)
+resnet_model = create_model(efficientnet_url,num_classes=train_data_10_percent.num_classes)
 resnet_model.summary()
 
 resnet_model.compile(loss="categorical_crossentropy",optimizer=tf.optimizers.Adam(),metrics=['accuracy'])
@@ -85,6 +86,7 @@ history_resnet_model = resnet_model.fit(train_data_10_percent,epochs=5,steps_per
                                         callbacks=[create_tensorboard_callback(dir_name='tensorflow_hub',experiment_name='resnet50v2')])
 
 
-
-
-
+#007 Plotting the loss curves of our ResNet feature extraction model
+#plot_loss_curves(history_resnet_model)
+#008 Building and training a pre-trained EfficientNet model on our data Change model URL
+# tensorboard --logdir E:/Tensorflow/tensorflow/TransferLearning/tensorflow_hub/resnet50v2
